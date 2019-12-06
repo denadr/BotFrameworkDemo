@@ -31,9 +31,6 @@ namespace Microsoft.BotBuilderSamples.Bots
             userData.TurnCount++;
             conversationData.TurnCount++;
 
-            await _userState.SaveChangesAsync(turnContext, cancellationToken: cancellationToken);
-            await _conversationState.SaveChangesAsync(turnContext, cancellationToken: cancellationToken);
-
             var replyText = 
                 $"Echo: {turnContext.Activity.Text}{Environment.NewLine}" +
                 $"Turn Count (user): {userData.TurnCount}{Environment.NewLine}" +

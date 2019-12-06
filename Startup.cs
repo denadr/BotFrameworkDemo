@@ -45,6 +45,8 @@ namespace Microsoft.BotBuilderSamples
                 Configuration.GetConnectionString("BlobStorage"),
                 "conversationstate"
             )));
+
+            services.AddSingleton<SaveStateMiddleware>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
