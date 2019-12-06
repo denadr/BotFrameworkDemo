@@ -1,42 +1,31 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
+using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
 
 namespace Microsoft.BotBuilderSamples.Bots
 {
-    public class EchoBot : ActivityHandler
+    public class DialogBot : ActivityHandler
     {
         private readonly UserState _userState;
         private readonly ConversationState _conversationState;
+        private readonly Dialog _dialog;
 
-        public EchoBot(UserState userState, ConversationState conversationState)
+        public DialogBot(UserState userState, ConversationState conversationState, MainDialog mainDialog)
         {
             _userState = userState;
             _conversationState = conversationState;
+            _dialog = mainDialog;
         }
 
         protected override async Task OnMessageActivityAsync(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
         {
-            var userStateAccessor = _userState.CreateProperty<UserData>(nameof(UserData));
-            var userData = await userStateAccessor.GetAsync(turnContext, () => new UserData(), cancellationToken);
-            var conversationStateAccessor = _conversationState.CreateProperty<ConversationData>(nameof(ConversationData));
-            var conversationData = await conversationStateAccessor.GetAsync(turnContext, () => new ConversationData(), cancellationToken);
-
-            userData.TurnCount++;
-            conversationData.TurnCount++;
-
-            var replyText = 
-                $"Echo: {turnContext.Activity.Text}{Environment.NewLine}" +
-                $"Turn Count (user): {userData.TurnCount}{Environment.NewLine}" +
-                $"Turn Count (conversation): {conversationData.TurnCount}";
-
-            await turnContext.SendActivityAsync(MessageFactory.Text(replyText, replyText), cancellationToken);
+            await _dialog.RunAsync(turnContext, _conversationState.CreateProperty<DialogState>(nameof(DialogState)), cancellationToken);
         }
 
         protected override async Task OnMembersAddedAsync(IList<ChannelAccount> membersAdded, ITurnContext<IConversationUpdateActivity> turnContext, CancellationToken cancellationToken)
@@ -47,6 +36,8 @@ namespace Microsoft.BotBuilderSamples.Bots
                 if (member.Id != turnContext.Activity.Recipient.Id)
                 {
                     await turnContext.SendActivityAsync(MessageFactory.Text(welcomeText, welcomeText), cancellationToken);
+
+                    await _dialog.RunAsync(turnContext, _conversationState.CreateProperty<DialogState>(nameof(DialogState)), cancellationToken);
                 }
             }
         }

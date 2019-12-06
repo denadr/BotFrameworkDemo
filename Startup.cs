@@ -35,7 +35,8 @@ namespace Microsoft.BotBuilderSamples
             services.AddSingleton<IBotFrameworkHttpAdapter, AdapterWithErrorHandler>();
 
             // Create the bot as a transient. In this case the ASP Controller is expecting an IBot.
-            services.AddTransient<IBot, EchoBot>();
+            services.AddTransient<IBot, DialogBot>();
+            services.AddTransient<MainDialog>();
 
             services.AddSingleton(new UserState(new AzureBlobStorage(
                 Configuration.GetConnectionString("BlobStorage"),
