@@ -14,7 +14,7 @@ namespace Microsoft.BotBuilderSamples
                 NameStepAsync,
                 EndStepAsync
             }));
-            AddDialog(new TextPrompt(nameof(TextPrompt)));
+            AddDialog(new TextPrompt(nameof(TextPrompt), ValidateNameAsync));
 
             InitialDialogId = nameof(WaterfallDialog);
         }
@@ -23,7 +23,8 @@ namespace Microsoft.BotBuilderSamples
         {
             return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions()
             {
-                Prompt = MessageFactory.Text("What's your name?")
+                Prompt = MessageFactory.Text("What's your name?"),
+                RetryPrompt = MessageFactory.Text("Please try again.")
             }, cancellationToken);
         }
         
@@ -31,6 +32,11 @@ namespace Microsoft.BotBuilderSamples
         {
             await stepContext.Context.SendActivityAsync(MessageFactory.Text($"Thank you, {stepContext.Result}!"));
             return await stepContext.EndDialogAsync(cancellationToken: cancellationToken);
+        }
+
+        private Task<bool> ValidateNameAsync(PromptValidatorContext<string> promptContext, CancellationToken cancellationToken)
+        {
+            return Task.FromResult(promptContext.Recognized.Succeeded && promptContext.Recognized.Value.Length > 2);
         }
     }
 }
