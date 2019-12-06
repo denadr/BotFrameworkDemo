@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 using Microsoft.BotBuilderSamples.Bots;
 using Microsoft.Bot.Builder.EchoBot;
+using Microsoft.Bot.Builder.Azure;
 
 namespace Microsoft.BotBuilderSamples
 {
@@ -35,6 +36,15 @@ namespace Microsoft.BotBuilderSamples
 
             // Create the bot as a transient. In this case the ASP Controller is expecting an IBot.
             services.AddTransient<IBot, EchoBot>();
+
+            services.AddSingleton(new UserState(new AzureBlobStorage(
+                Configuration.GetConnectionString("BlobStorage"),
+                "userstate"
+            )));
+            services.AddSingleton(new ConversationState(new AzureBlobStorage(
+                Configuration.GetConnectionString("BlobStorage"),
+                "conversationstate"
+            )));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
