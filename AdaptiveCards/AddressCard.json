@@ -1,0 +1,66 @@
+{
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "type": "AdaptiveCard",
+  "version": "1.0",
+  "body": [
+    {
+      "type": "ColumnSet",
+      "columns": [
+        {
+          "type": "Column",
+          "items": [
+            {
+              "type": "TextBlock",
+              "text": "Street"
+            },
+            {
+              "type": "Input.Text",
+              "id": "street",
+              "placeholder": "Ward Road",
+              "maxLength": 100
+            },
+            {
+              "type": "TextBlock",
+              "text": "House Number"
+            },
+            {
+              "type": "Input.Number",
+              "id": "houseNumber",
+              "placeholder": "105",
+              "min": 1,
+              "max": 9999
+            },
+            {
+              "type": "TextBlock",
+              "text": "Zip Code"
+            },
+            {
+              "type": "Input.Number",
+              "id": "zipCode",
+              "placeholder": "10701",
+              "min": 0,
+              "max": 99999
+            },
+            {
+              "type": "TextBlock",
+              "text": "City"
+            },
+            {
+              "type": "Input.Text",
+              "id": "city",
+              "placeholder": "Yonkers",
+              "maxLength": 100
+            }
+          ],
+          "width": "stretch"
+        }
+      ]
+    }
+  ],
+  "actions": [
+    {
+      "type": "Action.Submit",
+      "title": "Submit"
+    }
+  ]
+}
